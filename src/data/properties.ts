@@ -214,69 +214,129 @@ export const PROPERTIES: PropertyListing[] = [
   },
 ];
 
-export interface StrategicRegion {
-  state: RegionState;
-  corridors: string;
-  headline: string;
-  summary: string;
-  appreciation: string;
-  activeCount: number;
+export type NosotrasTabId = 'mision' | 'vision' | 'valores' | 'alianzas';
+
+export interface NosotrasPillar {
+  id: NosotrasTabId;
+  label: string;
+  kicker: string;
+  title: string;
+  body: string;
+  highlights: string[];
 }
 
-export const STRATEGIC_REGIONS: StrategicRegion[] = [
+export const NOSOTRAS_PILLARS: NosotrasPillar[] = [
   {
-    state: 'Querétaro',
-    corridors: 'El Campanario · Juriquilla · Zibatá · Arboledas',
-    headline: 'Sede central y motor industrial del Bajío',
-    summary:
-      'Nuestra oficina matriz en Av. Corregidora Nte. coordina operaciones residenciales, parques industriales y macrolotes habitacionales con dictamen notarial previo.',
-    appreciation: '+11.4% plusvalía anual promedio',
-    activeCount: 3,
+    id: 'mision',
+    label: 'Misión',
+    kicker: '01 · Propósito Institucional',
+    title: 'Impulsar el patrimonio de nuestros clientes y el liderazgo profesional en bienes raíces.',
+    body: 'Construimos una organización centrada en inspirar y respaldar a nuestras asociadas y clientes, promoviendo buenas prácticas inmobiliarias, acompañamiento cercano y decisiones patrimoniales seguras.',
+    highlights: [
+      'Acompañamiento colaborativo en cada etapa de compra, venta o renta',
+      'Prácticas profesionales enfocadas en la confianza y el trato humano',
+      'Impulso continuo al desarrollo ético de mujeres especialistas del sector',
+    ],
   },
   {
-    state: 'Yucatán',
-    corridors: 'Temozón Norte · Montes de Amé · Corredor Norte',
-    headline: 'Seguridad patrimonial y arquitectura bioclimática',
-    summary:
-      'Selección verificada de villas contemporáneas, tierra de inversión y propiedades frente a corredor médico y corporativo en Mérida.',
-    appreciation: '+13.2% plusvalía anual promedio',
-    activeCount: 2,
+    id: 'vision',
+    label: 'Visión',
+    kicker: '02 · Proyección de Firma',
+    title: 'Representar cada operación con transparencia, eficiencia y soluciones duraderas.',
+    body: 'Nuestra meta es consolidar un estándar de servicio inmobiliario que responda con rigor a las exigencias del mercado actual, generando valor sostenible para familias, inversionistas y desarrolladores.',
+    highlights: [
+      'Representación honesta y clara ante compradores, propietarios y notarías',
+      'Procesos ágiles respaldados por análisis de mercado y dictamen previo',
+      'Crecimiento responsable con impacto positivo en Querétaro y la República Mexicana',
+    ],
   },
   {
-    state: 'Estado de México',
-    corridors: 'Zona Esmeralda · Interlomas · Bosques de las Lomas',
-    headline: 'Privacidad boscosa y arquitectura residencial de autor',
-    summary:
-      'Acompañamiento discreto para compra y venta de residencias consolidadas, verificación de regímenes condominales y negociación directa.',
-    appreciation: '+8.7% plusvalía anual promedio',
-    activeCount: 1,
+    id: 'valores',
+    label: 'Valores',
+    kicker: '03 · Principios Rectores',
+    title: 'Seis compromisos no negociables en cada operación inmobiliaria.',
+    body: 'Cada expediente, avalúo y negociación se rige por criterios verificables de integridad profesional y responsabilidad social.',
+    highlights: [
+      'Transparencia y Honestidad en condiciones, comisiones y documentación',
+      'Ética y Profesionalismo acreditados durante toda la intermediación',
+      'Eficiencia operativa y Responsabilidad social en cada comunidad donde operamos',
+    ],
+  },
+  {
+    id: 'alianzas',
+    label: 'Alianzas',
+    kicker: '04 · Red Estratégica',
+    title: 'Alianzas sólidas con desarrolladores, notarías y firmas líderes del sector.',
+    body: 'Colaboramos estrechamente con desarrolladores certificados, especialistas financieros, despachos jurídicos y redes inmobiliarias para garantizar operaciones excepcionales.',
+    highlights: [
+      'Acceso directo a desarrollos residenciales y tierra de inversión verificada',
+      'Coordinación ágil con notarías públicas y peritos valuadores certificados',
+      'Red de colaboración interestatal entre Querétaro, Yucatán y Estado de México',
+    ],
   },
 ];
 
-export const ADVISORY_STEPS = [
+export const VALORES_LIST = [
+  { number: '01', name: 'Transparencia', detail: 'Información clara en precios, gravámenes y costos notariales.' },
+  { number: '02', name: 'Ética', detail: 'Actuación íntegra cuidando el patrimonio de todas las partes.' },
+  { number: '03', name: 'Honestidad', detail: 'Valuaciones realistas sin falsas expectativas comerciales.' },
+  { number: '04', name: 'Profesionalismo', detail: 'Asesoras capacitadas en normativa comercial, fiscal y registral.' },
+  { number: '05', name: 'Eficiencia', detail: 'Procesos ordenados desde la prospección hasta la escrituración.' },
+  { number: '06', name: 'Responsabilidad', detail: 'Empresa socialmente responsable enfocada en relaciones duraderas.' },
+];
+
+export interface ServiceItem {
+  number: string;
+  title: string;
+  summary: string;
+  deliverables: string[];
+  contactIntent: string;
+}
+
+export const SERVICES_LIST: ServiceItem[] = [
   {
     number: '01.',
-    title: 'Diagnóstico y Curaduría sin Costo',
-    description:
-      'Escuchamos tu objetivo patrimonial, financiero o familiar para depurar únicamente propiedades con potencial real, evitando visitas improductivas.',
+    title: 'Asesoría Gratuita y Personalizada',
+    summary:
+      'Diagnóstico inicial sin costo para compra, venta o renta. Filtramos opciones reales conforme a tu presupuesto, zona y horizonte patrimonial.',
+    deliverables: [
+      'Perfilamiento patrimonial y selección curada de inmuebles',
+      'Acompañamiento presencial y coordinación de recorridos privados',
+    ],
+    contactIntent: 'Comprar propiedad',
   },
   {
     number: '02.',
-    title: 'Valuación Comercial y Análisis de Mercado',
-    description:
-      'Contrastamos comparables reales cerrados en escritura pública por colonia y metro cuadrado para respaldar cada oferta o precio de salida.',
+    title: 'Gestión de Inmuebles, Terrenos y Desarrollos',
+    summary:
+      'Comercialización estratégica para propiedades residenciales, espacios corporativos, lotes habitacionales y tierra para desarrollo.',
+    deliverables: [
+      'Difusión calificada en portales y red de inversionistas',
+      'Filtrado de prospectos y negociación directa de ofertas',
+    ],
+    contactIntent: 'Vender mi inmueble',
   },
   {
     number: '03.',
-    title: 'Certeza Jurídica y Revisión Registral',
-    description:
-      'Validamos libertad de gravamen, antecedentes catastrales, uso de suelo, constancias fiscales y contratos privados antes de comprometer cualquier apartado.',
+    title: 'Intermediación y Asesoría Legal',
+    summary:
+      'Blindaje jurídico en operaciones residenciales y comerciales para que compres, vendas o rentes con tranquilidad documental.',
+    deliverables: [
+      'Revisión de escrituras, libertad de gravamen y uso de suelo',
+      'Contratos de compraventa, pólizas jurídicas y seguimiento notarial',
+    ],
+    contactIntent: 'Rentar residencia o espacio',
   },
   {
     number: '04.',
-    title: 'Acompañamiento Notarial hasta la Entrega',
-    description:
-      'Coordinamos avalúos bancarios, cálculo de ISR o exenciones aplicables y firma ante notario público hasta la entrega física del inmueble.',
+    title: 'Valuación Comercial y Estrategia de Salida',
+    summary:
+      'Análisis comparativo de mercado por colonia y metro cuadrado para definir precios competitivos y proteger tu plusvalía.',
+    deliverables: [
+      'Opinión de valor con comparables cerrados en escritura',
+      'Orientación fiscal preliminar e integración de expediente completo',
+    ],
+    contactIntent: 'Inversión en terrenos y desarrollos',
   },
 ];
 
@@ -287,3 +347,4 @@ export function formatMxn(amount: number): string {
     maximumFractionDigits: 0,
   }).format(amount);
 }
+

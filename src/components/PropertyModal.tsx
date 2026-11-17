@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { X, Check, Building2, ArrowUpRight } from 'lucide-react';
+import { X, Check, Building2 } from 'lucide-react';
 import { PropertyListing, formatMxn } from '../data/properties';
 
 interface PropertyModalProps {
   property: PropertyListing | null;
   onClose: () => void;
-  onSimulateMortgage: (priceMxn: number) => void;
 }
 
 export const PropertyModal: React.FC<PropertyModalProps> = ({
   property,
   onClose,
-  onSimulateMortgage,
 }) => {
   const [imgError, setImgError] = useState(false);
   const [visitorName, setVisitorName] = useState('');
@@ -184,22 +182,6 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
                 ))}
               </ul>
             </div>
-
-            {property.operation !== 'Renta' && (
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    onSimulateMortgage(property.priceMxn);
-                    onClose();
-                  }}
-                  className="inline-flex items-center gap-2 text-xs font-semibold text-[#1B4332] hover:underline cursor-pointer"
-                >
-                  <span>Cargar valor en el simulador hipotecario</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
           </div>
 
           {/* Right: Advisor & Private Tour Booking */}

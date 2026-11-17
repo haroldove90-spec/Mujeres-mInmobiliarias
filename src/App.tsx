@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowRight,
   Bookmark,
   Building2,
   Check,
+  ChevronDown,
   Mail,
   MapPin,
   Menu,
@@ -12,27 +13,38 @@ import {
   X,
 } from 'lucide-react';
 import {
-  ADVISORY_STEPS,
   HERO_IMAGE,
+  NOSOTRAS_PILLARS,
+  NosotrasTabId,
   OperationType,
   PROPERTIES,
   PropertyListing,
   RegionState,
-  STRATEGIC_REGIONS,
+  SERVICES_LIST,
+  VALORES_LIST,
 } from './data/properties';
 import { BrandMark } from './components/BrandLogo';
 import { PropertyCard } from './components/PropertyCard';
 import { PropertyModal } from './components/PropertyModal';
-import { MortgageSimulator } from './components/MortgageSimulator';
-import { LogoShowcaseSection } from './components/LogoShowcaseSection';
 
 type OperationFilter = 'Todas' | OperationType;
 type RegionFilter = 'Todas' | RegionState;
 type SortOption = 'featured' | 'price-asc' | 'price-desc' | 'area-desc';
 
+const NOSOTRAS_SUBITEMS: { id: NosotrasTabId; label: string }[] = [
+  { id: 'mision', label: 'Misión' },
+  { id: 'vision', label: 'Visión' },
+  { id: 'valores', label: 'Valores' },
+  { id: 'alianzas', label: 'Alianzas' },
+];
+
 export default function App() {
-  // Navigation & mobile drawer
+  // Navigation & Nosotras dropdown
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileNosotrasOpen, setMobileNosotrasOpen] = useState(true);
+  const [nosotrasDropdownOpen, setNosotrasDropdownOpen] = useState(false);
+  const [activeNosotrasTab, setActiveNosotrasTab] = useState<NosotrasTabId>('mision');
+  const nosotrasMenuRef = useRef<HTMLDivElement>(null);
 
   // Hero & catalog filtering state
   const [operationFilter, setOperationFilter] = useState<OperationFilter>('Todas');
@@ -52,12 +64,6 @@ export default function App() {
   // Active property modal
   const [selectedProperty, setSelectedProperty] = useState<PropertyListing | null>(null);
 
-  // Mortgage simulator lifted state (connects directly with property modal)
-  const [simPrice, setSimPrice] = useState<number>(11450000);
-  const [simDownPct, setSimDownPct] = useState<number>(25);
-  const [simYears, setSimYears] = useState<number>(20);
-  const [simRate, setSimRate] = useState<number>(10.25);
-
   // Advisory contact form state
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
@@ -66,6 +72,30 @@ export default function App() {
   const [contactNotes, setContactNotes] = useState('');
   const [contactError, setContactError] = useState('');
   const [contactSubmitted, setContactSubmitted] = useState(false);
+
+  useEffect(() => {
+    const handleOutside = (e: MouseEvent) => {
+      if (nosotrasMenuRef.current && !nosotrasMenuRef.current.contains(e.target as Node)) {
+        setNosotrasDropdownOpen(false);
+      }
+    };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setNosotrasDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutside);
+    window.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleOutside);
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, []);
+
+  const activeNosotrasPillar = useMemo(
+    () => NOSOTRAS_PILLARS.find((p) => p.id === activeNosotrasTab) ?? NOSOTRAS_PILLARS[0],
+    [activeNosotrasTab]
+  );
 
   const filteredProperties = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -101,7 +131,18 @@ export default function App() {
 
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
+    setNosotrasDropdownOpen(false);
     const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleSelectNosotrasSubitem = (tabId: NosotrasTabId) => {
+    setActiveNosotrasTab(tabId);
+    setNosotrasDropdownOpen(false);
+    setMobileMenuOpen(false);
+    const el = document.getElementById('nosotras');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
@@ -112,14 +153,7 @@ export default function App() {
     setOperationFilter(heroOp);
     setRegionFilter(heroRegion);
     setOnlySaved(false);
-    scrollToSection('propiedades');
-  };
-
-  const handleFilterByRegion = (state: RegionState) => {
-    setRegionFilter(state);
-    setOperationFilter('Todas');
-    setOnlySaved(false);
-    scrollToSection('propiedades');
+    scrollToSection('inmuebles');
   };
 
   const handleResetFilters = () => {
@@ -130,9 +164,10 @@ export default function App() {
     setSortBy('featured');
   };
 
-  const handleSimulateFromModal = (priceMxn: number) => {
-    setSimPrice(priceMxn);
-    scrollToSection('simulador');
+  const handleServiceSelect = (intent: string) => {
+    setContactIntent(intent);
+    setContactSubmitted(false);
+    scrollToSection('contacto');
   };
 
   const handleContactSubmit = (e: React.FormEvent) => {
@@ -167,34 +202,82 @@ export default function App() {
             </span>
           </a>
 
-          {/* Zone 2: 4 Single-line Nav Links */}
+          {/* Zone 2: 5 Nav Items matching Inicio, Nosotras (dropdown), Servicios, Inmuebles, Contacto */}
           <nav
             aria-label="Navegación principal"
-            className="hidden md:flex items-center gap-7 text-sm font-medium text-[#57534E]"
+            className="hidden md:flex items-center gap-6 lg:gap-7 text-sm font-medium text-[#57534E]"
           >
             <a
-              href="#propiedades"
+              href="#inicio"
               className="hover:text-[#161513] hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
             >
-              Propiedades
+              Inicio
+            </a>
+
+            {/* Nosotras Dropdown */}
+            <div ref={nosotrasMenuRef} className="relative shrink-0">
+              <button
+                type="button"
+                aria-expanded={nosotrasDropdownOpen}
+                aria-haspopup="menu"
+                onClick={() => setNosotrasDropdownOpen((prev) => !prev)}
+                className={`inline-flex items-center gap-1 hover:text-[#161513] transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                  nosotrasDropdownOpen ? 'text-[#161513] underline underline-offset-4' : ''
+                }`}
+              >
+                <span>Nosotras</span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-150 ${
+                    nosotrasDropdownOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+
+              {nosotrasDropdownOpen && (
+                <div
+                  role="menu"
+                  aria-label="Subsecciones de Nosotras"
+                  className="absolute left-0 top-full mt-3 w-48 bg-white border border-[#E2DFD9] shadow-lg py-1.5 z-50"
+                >
+                  {NOSOTRAS_SUBITEMS.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      role="menuitem"
+                      onClick={() => handleSelectNosotrasSubitem(item.id)}
+                      className={`w-full text-left px-4 py-2.5 text-sm transition-colors cursor-pointer flex items-center justify-between ${
+                        activeNosotrasTab === item.id
+                          ? 'bg-[#F3F1EC] text-[#1B4332] font-semibold'
+                          : 'text-[#161513] hover:bg-[#F9F8F6]'
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      {activeNosotrasTab === item.id && (
+                        <span className="text-[10px] font-mono text-[#9A7B3E]">·</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <a
+              href="#servicios"
+              className="hover:text-[#161513] hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
+            >
+              Servicios
             </a>
             <a
-              href="#regiones"
+              href="#inmuebles"
               className="hover:text-[#161513] hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
             >
-              Regiones
+              Inmuebles
             </a>
             <a
-              href="#simulador"
+              href="#contacto"
               className="hover:text-[#161513] hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
             >
-              Simulador
-            </a>
-            <a
-              href="#logotipo"
-              className="hover:text-[#161513] hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
-            >
-              Logotipo
+              Contacto
             </a>
           </nav>
 
@@ -222,22 +305,69 @@ export default function App() {
         {/* Mobile Drawer */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-[#E2DFD9] bg-[#F9F8F6] px-4 sm:px-6 py-4 space-y-3">
-            <div className="flex flex-col space-y-2 text-sm font-medium text-[#161513]">
+            <div className="flex flex-col space-y-1 text-sm font-medium text-[#161513]">
               <a
-                href="#propiedades"
+                href="#inicio"
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-1.5"
+                className="py-2 border-b border-[#E2DFD9]/60"
               >
-                Propiedades
+                Inicio
               </a>
-              <a href="#regiones" onClick={() => setMobileMenuOpen(false)} className="py-1.5">
-                Regiones
+
+              {/* Mobile Nosotras Accordion */}
+              <div className="border-b border-[#E2DFD9]/60 py-1">
+                <button
+                  type="button"
+                  onClick={() => setMobileNosotrasOpen((prev) => !prev)}
+                  className="w-full py-1.5 flex items-center justify-between text-left cursor-pointer"
+                >
+                  <span>Nosotras</span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-[#57534E] transition-transform ${
+                      mobileNosotrasOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {mobileNosotrasOpen && (
+                  <div className="pl-4 pb-2 pt-1 flex flex-col space-y-1.5 text-xs text-[#57534E]">
+                    {NOSOTRAS_SUBITEMS.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => handleSelectNosotrasSubitem(item.id)}
+                        className={`text-left py-1 cursor-pointer ${
+                          activeNosotrasTab === item.id
+                            ? 'text-[#1B4332] font-semibold'
+                            : 'hover:text-[#161513]'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <a
+                href="#servicios"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 border-b border-[#E2DFD9]/60"
+              >
+                Servicios
               </a>
-              <a href="#simulador" onClick={() => setMobileMenuOpen(false)} className="py-1.5">
-                Simulador
+              <a
+                href="#inmuebles"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 border-b border-[#E2DFD9]/60"
+              >
+                Inmuebles
               </a>
-              <a href="#logotipo" onClick={() => setMobileMenuOpen(false)} className="py-1.5">
-                Logotipo
+              <a
+                href="#contacto"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2"
+              >
+                Contacto
               </a>
             </div>
             <button
@@ -252,7 +382,7 @@ export default function App() {
       </header>
 
       <main className="flex-1">
-        {/* Hero Section: Architectural Editorial Split */}
+        {/* Section 1: Inicio (Hero Split + Quick Finder) */}
         <section id="inicio" className="border-b border-[#E2DFD9]">
           <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-14 lg:py-20">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-12 items-stretch">
@@ -322,15 +452,15 @@ export default function App() {
                       type="submit"
                       className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#1B4332] text-white text-xs font-semibold hover:bg-[#143326] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
                     >
-                      <span>Explorar portafolio</span>
+                      <span>Explorar inmuebles</span>
                       <ArrowRight className="w-4 h-4" />
                     </button>
                     <button
                       type="button"
-                      onClick={() => scrollToSection('logotipo')}
+                      onClick={() => scrollToSection('servicios')}
                       className="inline-flex items-center justify-center px-4 py-3 border border-[#E2DFD9] text-xs font-medium text-[#161513] hover:border-[#161513] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
                     >
-                      Ver propuesta de logotipo
+                      Conocer servicios
                     </button>
                   </div>
                 </form>
@@ -410,13 +540,201 @@ export default function App() {
           </div>
         </section>
 
-        {/* Section 1: Curated Property Portfolio */}
-        <section id="propiedades" className="py-14 sm:py-20 lg:py-24">
+        {/* Section 2: Nosotras (Misión, Visión, Valores, Alianzas) */}
+        <section id="nosotras" className="py-14 sm:py-20 lg:py-24 bg-[#F3F1EC]">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8 border-b border-[#E2DFD9]">
+              <div className="max-w-2xl">
+                <p className="text-xs uppercase tracking-[0.22em] text-[#57534E]">
+                  Nosotras · Identidad Institucional
+                </p>
+                <h2 className="mt-2 text-3xl lg:text-4xl font-medium tracking-tight text-[#161513] [text-wrap:balance]">
+                  Mujeres líderes construyendo certeza patrimonial en México
+                </h2>
+              </div>
+
+              {/* Interactive Pillar Switcher */}
+              <div
+                role="tablist"
+                aria-label="Pilares institucionales de Nosotras"
+                className="inline-flex flex-wrap items-center gap-1 p-1 bg-white border border-[#E2DFD9] self-start lg:self-auto max-w-full"
+              >
+                {NOSOTRAS_PILLARS.map((pillar) => (
+                  <button
+                    key={pillar.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={activeNosotrasTab === pillar.id}
+                    onClick={() => setActiveNosotrasTab(pillar.id)}
+                    className={`px-3.5 py-2 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                      activeNosotrasTab === pillar.id
+                        ? 'bg-[#1B4332] text-white'
+                        : 'text-[#57534E] hover:text-[#161513]'
+                    }`}
+                  >
+                    {pillar.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Active Pillar Spotlight */}
+            <div className="mt-8 bg-white border border-[#E2DFD9] p-6 sm:p-10">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+                <div className="lg:col-span-6 space-y-4 min-w-0">
+                  <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#9A7B3E]">
+                    {activeNosotrasPillar.kicker}
+                  </p>
+                  <h3 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#161513] leading-snug">
+                    {activeNosotrasPillar.title}
+                  </h3>
+                  <p className="text-[15px] leading-relaxed text-[#57534E]">
+                    {activeNosotrasPillar.body}
+                  </p>
+                </div>
+
+                <div className="lg:col-span-6 min-w-0">
+                  {activeNosotrasTab === 'valores' ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {VALORES_LIST.map((valor) => (
+                        <div
+                          key={valor.number}
+                          className="p-4 bg-[#F9F8F6] border border-[#E2DFD9]"
+                        >
+                          <p className="font-mono text-[11px] text-[#9A7B3E] tabular-nums">
+                            {valor.number}
+                          </p>
+                          <p className="mt-1 font-sans text-sm font-semibold text-[#161513]">
+                            {valor.name}
+                          </p>
+                          <p className="mt-1 text-xs leading-relaxed text-[#57534E]">
+                            {valor.detail}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="border-t border-[#E2DFD9] divide-y divide-[#E2DFD9]">
+                      {activeNosotrasPillar.highlights.map((item, idx) => (
+                        <div key={item} className="py-4 flex items-start gap-3.5">
+                          <span className="font-mono text-xs text-[#9A7B3E] mt-0.5 tabular-nums">
+                            0{idx + 1}
+                          </span>
+                          <p className="text-sm leading-relaxed text-[#161513]">{item}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* 4-Pillar Quick Index */}
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {NOSOTRAS_PILLARS.map((pillar) => {
+                const isActive = activeNosotrasTab === pillar.id;
+                return (
+                  <button
+                    key={pillar.id}
+                    id={pillar.id}
+                    type="button"
+                    onClick={() => setActiveNosotrasTab(pillar.id)}
+                    className={`text-left p-5 border transition-colors cursor-pointer ${
+                      isActive
+                        ? 'bg-[#161513] text-white border-[#161513]'
+                        : 'bg-white text-[#161513] border-[#E2DFD9] hover:border-[#161513]/40'
+                    }`}
+                  >
+                    <p
+                      className={`font-mono text-[11px] uppercase tracking-[0.16em] ${
+                        isActive ? 'text-[#D4B475]' : 'text-[#9A7B3E]'
+                      }`}
+                    >
+                      {pillar.label}
+                    </p>
+                    <p
+                      className={`mt-2 text-xs leading-relaxed line-clamp-3 ${
+                        isActive ? 'text-[#D6D3D1]' : 'text-[#57534E]'
+                      }`}
+                    >
+                      {pillar.body}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Section 3: Servicios */}
+        <section id="servicios" className="py-14 sm:py-20 lg:py-24 border-t border-[#E2DFD9]">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8 border-b border-[#E2DFD9]">
+              <div className="max-w-2xl">
+                <p className="text-xs uppercase tracking-[0.22em] text-[#57534E]">
+                  Servicios Especializados
+                </p>
+                <h2 className="mt-2 text-3xl lg:text-4xl font-medium tracking-tight text-[#161513] [text-wrap:balance]">
+                  Soluciones integrales para compra, venta, renta y desarrollos
+                </h2>
+              </div>
+              <p className="text-sm text-[#57534E] max-w-md">
+                Asesoría gratuita inicial combinada con representación comercial, valuación técnica
+                y blindaje jurídico.
+              </p>
+            </div>
+
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+              {SERVICES_LIST.map((service) => (
+                <div
+                  key={service.number}
+                  className="bg-white border border-[#E2DFD9] p-6 sm:p-8 flex flex-col justify-between gap-6"
+                >
+                  <div>
+                    <p className="font-mono text-xs text-[#9A7B3E] tabular-nums">
+                      {service.number}
+                    </p>
+                    <h3 className="mt-2 text-2xl font-medium tracking-tight text-[#161513]">
+                      {service.title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[#57534E]">
+                      {service.summary}
+                    </p>
+                    <ul className="mt-5 pt-4 border-t border-[#E2DFD9] space-y-2">
+                      {service.deliverables.map((del) => (
+                        <li key={del} className="text-xs text-[#44403C] flex items-start gap-2">
+                          <span className="text-[#9A7B3E]" aria-hidden="true">
+                            —
+                          </span>
+                          <span>{del}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => handleServiceSelect(service.contactIntent)}
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1B4332] hover:underline cursor-pointer"
+                    >
+                      <span>Solicitar este servicio</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Section 4: Inmuebles (Curated Property Portfolio) */}
+        <section id="inmuebles" className="py-14 sm:py-20 lg:py-24 bg-[#F3F1EC] border-t border-[#E2DFD9]">
           <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8 border-b border-[#E2DFD9]">
               <div>
                 <p className="text-xs uppercase tracking-[0.22em] text-[#57534E]">
-                  Portafolio Verificado
+                  Inmuebles · Portafolio Verificado
                 </p>
                 <h2 className="mt-2 text-3xl lg:text-4xl font-medium tracking-tight text-[#161513]">
                   Propiedades seleccionadas
@@ -427,7 +745,7 @@ export default function App() {
               <div
                 role="tablist"
                 aria-label="Filtrar por tipo de operación"
-                className="inline-flex flex-wrap items-center gap-1 p-1 bg-[#EFECE7] border border-[#E2DFD9] self-start lg:self-auto max-w-full"
+                className="inline-flex flex-wrap items-center gap-1 p-1 bg-white border border-[#E2DFD9] self-start lg:self-auto max-w-full"
               >
                 {(['Todas', 'Venta', 'Renta', 'Terreno'] as OperationFilter[]).map((op) => (
                   <button
@@ -438,7 +756,7 @@ export default function App() {
                     onClick={() => setOperationFilter(op)}
                     className={`px-3 sm:px-3.5 py-2 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                       operationFilter === op
-                        ? 'bg-white text-[#161513] shadow-xs'
+                        ? 'bg-[#1B4332] text-white'
                         : 'text-[#57534E] hover:text-[#161513]'
                     }`}
                   >
@@ -543,117 +861,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* Section 2: Strategic Regions */}
-        <section id="regiones" className="py-14 sm:py-20 lg:py-24 bg-[#F3F1EC] border-t border-[#E2DFD9]">
-          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
-            <div className="max-w-2xl">
-              <p className="text-xs uppercase tracking-[0.22em] text-[#57534E]">
-                Presencia Territorial
-              </p>
-              <h2 className="mt-2 text-3xl lg:text-4xl font-medium tracking-tight text-[#161513] [text-wrap:balance]">
-                Tres corredores inmobiliarios de alta consolidación
-              </h2>
-            </div>
-
-            <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {STRATEGIC_REGIONS.map((region) => (
-                <div
-                  key={region.state}
-                  className="bg-white border border-[#E2DFD9] p-6 sm:p-7 flex flex-col justify-between gap-6"
-                >
-                  <div>
-                    <div className="flex items-center justify-between gap-3 text-xs text-[#57534E]">
-                      <span className="font-mono uppercase tracking-[0.16em] text-[#9A7B3E]">
-                        {region.state}
-                      </span>
-                      <span className="font-mono tabular-nums">
-                        {region.activeCount} en catálogo
-                      </span>
-                    </div>
-                    <h3 className="mt-3 text-2xl font-medium text-[#161513] leading-snug">
-                      {region.headline}
-                    </h3>
-                    <p className="mt-2 text-xs font-medium text-[#1B4332]">{region.corridors}</p>
-                    <p className="mt-4 text-sm leading-relaxed text-[#57534E]">{region.summary}</p>
-                  </div>
-
-                  <div className="pt-5 border-t border-[#E2DFD9] flex items-center justify-between gap-4">
-                    <span className="font-mono text-xs text-[#161513] tabular-nums">
-                      {region.appreciation}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleFilterByRegion(region.state)}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1B4332] hover:underline whitespace-nowrap shrink-0 cursor-pointer"
-                    >
-                      <span>Filtrar plaza</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Section 3: Advisory Model & Mortgage Simulator */}
-        <section className="py-14 sm:py-20 lg:py-24 border-t border-[#E2DFD9]">
-          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-              {/* Left: Numbered Advisory Method */}
-              <div className="lg:col-span-5 space-y-8 min-w-0">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.22em] text-[#57534E]">
-                    Metodología de Firma
-                  </p>
-                  <h2 className="mt-2 text-3xl lg:text-4xl font-medium tracking-tight text-[#161513] [text-wrap:balance]">
-                    Acompañamiento integral de principio a escritura
-                  </h2>
-                  <p className="mt-4 text-[15px] leading-relaxed text-[#57534E]">
-                    Cada operación involucra decisiones patrimoniales, fiscales y legales. Nuestro
-                    equipo multidisciplinario de asesoras te acompaña con transparencia en cuatro
-                    etapas claras.
-                  </p>
-                </div>
-
-                <div className="divide-y divide-[#E2DFD9] border-t border-b border-[#E2DFD9]">
-                  {ADVISORY_STEPS.map((step) => (
-                    <div key={step.number} className="py-5">
-                      <h3 className="font-sans text-sm font-semibold text-[#161513]">
-                        <span className="font-mono text-[#9A7B3E] mr-2 tabular-nums">
-                          {step.number}
-                        </span>
-                        {step.title}
-                      </h3>
-                      <p className="mt-1.5 text-sm leading-relaxed text-[#57534E]">
-                        {step.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Right: Live Financial Simulator */}
-              <div className="lg:col-span-7 min-w-0">
-                <MortgageSimulator
-                  propertyPrice={simPrice}
-                  onPropertyPriceChange={setSimPrice}
-                  downPaymentPct={simDownPct}
-                  onDownPaymentPctChange={setSimDownPct}
-                  years={simYears}
-                  onYearsChange={setSimYears}
-                  annualRate={simRate}
-                  onAnnualRateChange={setSimRate}
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 4: Brand Identity & Bespoke SVG Logo Showcase */}
-        <LogoShowcaseSection />
-
-        {/* Section 5: Advisory Lead Capture & Headquarters */}
+        {/* Section 5: Contacto */}
         <section
           id="contacto"
           className="py-14 sm:py-20 lg:py-28 bg-[#161513] text-[#F9F8F6] border-t border-[#292524]"
@@ -661,10 +869,10 @@ export default function App() {
           <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
               {/* Left: Headquarters & Direct Channels */}
-              <div className="lg:col-span-5 space-y-8">
+              <div className="lg:col-span-5 space-y-8 min-w-0">
                 <div>
                   <p className="text-xs uppercase tracking-[0.22em] text-[#D4B475]">
-                    Atención Personalizada
+                    Contacto · Atención Personalizada
                   </p>
                   <h2 className="mt-3 text-3xl lg:text-4xl font-medium tracking-tight text-white [text-wrap:balance]">
                     Conversa con una socia asesora sin costo inicial
@@ -678,7 +886,7 @@ export default function App() {
                 <div className="space-y-4 pt-6 border-t border-white/15 text-sm">
                   <div className="flex items-start gap-3">
                     <MapPin className="w-4 h-4 text-[#D4B475] mt-1 shrink-0" />
-                    <div>
+                    <div className="min-w-0">
                       <p className="font-medium text-white">Oficina Matriz Querétaro</p>
                       <p className="text-[#A8A29E]">
                         Av. Corregidora Nte. 1116, Piso 9, Arboledas, Santiago de Querétaro, Qro.
@@ -707,7 +915,7 @@ export default function App() {
               </div>
 
               {/* Right: Validated Advisory Request Form */}
-              <div className="lg:col-span-7 bg-[#1F1D1A] border border-white/15 p-6 sm:p-8">
+              <div className="lg:col-span-7 bg-[#1F1D1A] border border-white/15 p-5 sm:p-8 min-w-0">
                 {contactSubmitted ? (
                   <div className="py-10 space-y-4">
                     <div className="w-10 h-10 bg-[#1B4332] text-white inline-flex items-center justify-center">
@@ -870,17 +1078,17 @@ export default function App() {
           </div>
 
           <div className="flex flex-wrap items-center gap-6 text-xs text-[#57534E]">
-            <a href="#propiedades" className="hover:text-[#161513] transition-colors">
-              Propiedades
+            <a href="#inicio" className="hover:text-[#161513] transition-colors">
+              Inicio
             </a>
-            <a href="#regiones" className="hover:text-[#161513] transition-colors">
-              Regiones
+            <a href="#nosotras" className="hover:text-[#161513] transition-colors">
+              Nosotras
             </a>
-            <a href="#simulador" className="hover:text-[#161513] transition-colors">
-              Simulador
+            <a href="#servicios" className="hover:text-[#161513] transition-colors">
+              Servicios
             </a>
-            <a href="#logotipo" className="hover:text-[#161513] transition-colors">
-              Logotipo
+            <a href="#inmuebles" className="hover:text-[#161513] transition-colors">
+              Inmuebles
             </a>
             <a href="#contacto" className="hover:text-[#161513] transition-colors">
               Contacto
@@ -897,7 +1105,6 @@ export default function App() {
       <PropertyModal
         property={selectedProperty}
         onClose={() => setSelectedProperty(null)}
-        onSimulateMortgage={handleSimulateFromModal}
       />
     </div>
   );
