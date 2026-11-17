@@ -49,11 +49,11 @@ export const LogoShowcaseSection: React.FC = () => {
   };
 
   return (
-    <section id="logotipo" className="py-20 lg:py-28 border-t border-[#E2DFD9] bg-[#F3F1EC]">
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+    <section id="logotipo" className="py-14 sm:py-20 lg:py-28 border-t border-[#E2DFD9] bg-[#F3F1EC]">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           {/* Left: Brand architecture rationale */}
-          <div className="lg:col-span-5 space-y-8">
+          <div className="lg:col-span-5 space-y-8 min-w-0">
             <div>
               <p className="text-xs uppercase tracking-[0.22em] text-[#57534E]">
                 Identidad Visual · Propuesta de Logotipo
@@ -99,7 +99,7 @@ export const LogoShowcaseSection: React.FC = () => {
             </div>
 
             {/* Palette grid */}
-            <div className="grid grid-cols-2 gap-3 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               {PALETTE_SWATCHES.map((swatch) => (
                 <div
                   key={swatch.hex}
@@ -120,16 +120,16 @@ export const LogoShowcaseSection: React.FC = () => {
           </div>
 
           {/* Right: Interactive Logo Canvas & Vector Download */}
-          <div className="lg:col-span-7 bg-white border border-[#E2DFD9] p-6 sm:p-8">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#E2DFD9]">
+          <div className="lg:col-span-7 bg-white border border-[#E2DFD9] p-5 sm:p-8 min-w-0">
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-5 sm:pb-6 border-b border-[#E2DFD9]">
               {/* Layout switcher */}
-              <div className="flex items-center gap-1 p-1 bg-[#F3F1EC] border border-[#E2DFD9]">
+              <div className="flex flex-wrap items-center gap-1 p-1 bg-[#F3F1EC] border border-[#E2DFD9] max-w-full">
                 {LAYOUT_OPTIONS.map((item) => (
                   <button
                     key={item.id}
                     type="button"
                     onClick={() => setLayout(item.id)}
-                    className={`px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                    className={`px-2.5 sm:px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                       layout === item.id
                         ? 'bg-white text-[#161513] shadow-xs'
                         : 'text-[#57534E] hover:text-[#161513]'
@@ -141,13 +141,13 @@ export const LogoShowcaseSection: React.FC = () => {
               </div>
 
               {/* Surface switcher */}
-              <div className="flex items-center gap-1 p-1 bg-[#F3F1EC] border border-[#E2DFD9]">
+              <div className="flex flex-wrap items-center gap-1 p-1 bg-[#F3F1EC] border border-[#E2DFD9] max-w-full">
                 {SURFACE_OPTIONS.map((item) => (
                   <button
                     key={item.id}
                     type="button"
                     onClick={() => setSurface(item.id)}
-                    className={`px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                    className={`px-2.5 sm:px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                       surface === item.id
                         ? 'bg-white text-[#161513] shadow-xs'
                         : 'text-[#57534E] hover:text-[#161513]'
@@ -161,7 +161,7 @@ export const LogoShowcaseSection: React.FC = () => {
 
             {/* Live interactive logo preview canvas */}
             <div
-              className={`mt-6 min-h-[300px] sm:min-h-[340px] flex items-center justify-center p-8 sm:p-12 border border-[#E2DFD9] transition-colors duration-200 ${activeSurface.bgClass}`}
+              className={`mt-5 sm:mt-6 min-h-[240px] sm:min-h-[320px] flex items-center justify-center p-5 sm:p-10 lg:p-12 border border-[#E2DFD9] transition-colors duration-200 ${activeSurface.bgClass}`}
             >
               <BrandLockup layout={layout} surface={surface} />
             </div>

@@ -148,17 +148,21 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9F8F6] text-[#161513]">
+    <div className="min-h-screen flex flex-col bg-[#F9F8F6] text-[#161513] overflow-x-clip">
       {/* Strict 3-Zone Top Bar */}
       <header className="sticky top-0 z-40 bg-[#F9F8F6]/95 backdrop-blur-xs border-b border-[#E2DFD9]">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-16 flex items-center justify-between gap-8">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between gap-3 md:gap-8">
           {/* Zone 1: Single-line Brand Wordmark + Custom Monogram */}
           <a
             href="#inicio"
-            className="inline-flex items-center gap-3 whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1B4332]"
+            className="inline-flex items-center gap-2 sm:gap-3 min-w-0 whitespace-nowrap md:shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1B4332]"
           >
-            <BrandMark className="w-7 h-7 shrink-0" strokeColor="#161513" accentColor="#9A7B3E" />
-            <span className="font-editorial text-xl sm:text-[22px] font-semibold tracking-tight text-[#161513]">
+            <BrandMark
+              className="w-6 h-6 sm:w-7 sm:h-7 shrink-0"
+              strokeColor="#161513"
+              accentColor="#9A7B3E"
+            />
+            <span className="font-editorial text-[17px] sm:text-xl lg:text-[22px] font-semibold tracking-tight text-[#161513] truncate">
               Mujer Inmobiliaria &amp; Asociadas
             </span>
           </a>
@@ -217,7 +221,7 @@ export default function App() {
 
         {/* Mobile Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-[#E2DFD9] bg-[#F9F8F6] px-6 py-4 space-y-3">
+          <div className="md:hidden border-t border-[#E2DFD9] bg-[#F9F8F6] px-4 sm:px-6 py-4 space-y-3">
             <div className="flex flex-col space-y-2 text-sm font-medium text-[#161513]">
               <a
                 href="#propiedades"
@@ -250,15 +254,15 @@ export default function App() {
       <main className="flex-1">
         {/* Hero Section: Architectural Editorial Split */}
         <section id="inicio" className="border-b border-[#E2DFD9]">
-          <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-12 lg:py-20">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-14 lg:py-20">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-12 items-stretch">
               {/* Left Narrative & Live Search */}
-              <div className="lg:col-span-6 flex flex-col justify-between gap-8">
+              <div className="lg:col-span-6 flex flex-col justify-between gap-7 sm:gap-8 min-w-0">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.22em] text-[#57534E]">
+                  <p className="text-[11px] sm:text-xs uppercase tracking-[0.16em] sm:tracking-[0.22em] text-[#57534E]">
                     Santiago de Querétaro · Yucatán · Estado de México
                   </p>
-                  <h1 className="mt-4 text-[clamp(2.4rem,4.3vw,3.85rem)] font-medium tracking-tight text-[#161513] leading-[1.06] [text-wrap:balance]">
+                  <h1 className="mt-3 sm:mt-4 text-[clamp(2.05rem,4.3vw,3.85rem)] font-medium tracking-tight text-[#161513] leading-[1.08] [text-wrap:balance]">
                     Patrimonio inmobiliario con criterio arquitectónico y certeza jurídica.
                   </h1>
                   <p className="mt-5 text-[15px] sm:text-base leading-relaxed text-[#57534E] max-w-xl">
@@ -333,8 +337,8 @@ export default function App() {
               </div>
 
               {/* Right Focal Visual */}
-              <div className="lg:col-span-6 flex flex-col">
-                <div className="relative flex-1 min-h-[320px] lg:min-h-[460px] bg-[#EFECE7] border border-[#E2DFD9] overflow-hidden">
+              <div className="lg:col-span-6 flex flex-col min-w-0">
+                <div className="relative flex-1 min-h-[260px] sm:min-h-[360px] lg:min-h-[460px] bg-[#EFECE7] border border-[#E2DFD9] overflow-hidden">
                   {!heroImgError ? (
                     <img
                       src={HERO_IMAGE}
@@ -407,8 +411,8 @@ export default function App() {
         </section>
 
         {/* Section 1: Curated Property Portfolio */}
-        <section id="propiedades" className="py-20 lg:py-24">
-          <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
+        <section id="propiedades" className="py-14 sm:py-20 lg:py-24">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8 border-b border-[#E2DFD9]">
               <div>
                 <p className="text-xs uppercase tracking-[0.22em] text-[#57534E]">
@@ -423,7 +427,7 @@ export default function App() {
               <div
                 role="tablist"
                 aria-label="Filtrar por tipo de operación"
-                className="inline-flex flex-wrap items-center gap-1 p-1 bg-[#EFECE7] border border-[#E2DFD9] self-start lg:self-auto"
+                className="inline-flex flex-wrap items-center gap-1 p-1 bg-[#EFECE7] border border-[#E2DFD9] self-start lg:self-auto max-w-full"
               >
                 {(['Todas', 'Venta', 'Renta', 'Terreno'] as OperationFilter[]).map((op) => (
                   <button
@@ -432,7 +436,7 @@ export default function App() {
                     role="tab"
                     aria-selected={operationFilter === op}
                     onClick={() => setOperationFilter(op)}
-                    className={`px-3.5 py-2 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                    className={`px-3 sm:px-3.5 py-2 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                       operationFilter === op
                         ? 'bg-white text-[#161513] shadow-xs'
                         : 'text-[#57534E] hover:text-[#161513]'
@@ -446,8 +450,8 @@ export default function App() {
 
             {/* Filter Utility Bar */}
             <div className="py-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E2DFD9]">
-              <div className="flex flex-wrap items-center gap-3 flex-1">
-                <div className="relative flex-1 min-w-[220px] max-w-sm">
+              <div className="flex flex-wrap items-center gap-3 flex-1 min-w-0">
+                <div className="relative w-full sm:flex-1 sm:min-w-[200px] sm:max-w-sm">
                   <Search className="w-4 h-4 text-[#57534E] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="search"
@@ -463,7 +467,7 @@ export default function App() {
                   aria-label="Filtrar por estado"
                   value={regionFilter}
                   onChange={(e) => setRegionFilter(e.target.value as RegionFilter)}
-                  className="px-3 py-2 text-xs bg-white border border-[#E2DFD9] text-[#161513] focus:outline-none focus:border-[#1B4332]"
+                  className="flex-1 sm:flex-none px-3 py-2 text-xs bg-white border border-[#E2DFD9] text-[#161513] focus:outline-none focus:border-[#1B4332]"
                 >
                   <option value="Todas">Todas las plazas</option>
                   <option value="Querétaro">Querétaro</option>
@@ -540,8 +544,8 @@ export default function App() {
         </section>
 
         {/* Section 2: Strategic Regions */}
-        <section id="regiones" className="py-20 lg:py-24 bg-[#F3F1EC] border-t border-[#E2DFD9]">
-          <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
+        <section id="regiones" className="py-14 sm:py-20 lg:py-24 bg-[#F3F1EC] border-t border-[#E2DFD9]">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
             <div className="max-w-2xl">
               <p className="text-xs uppercase tracking-[0.22em] text-[#57534E]">
                 Presencia Territorial
@@ -555,7 +559,7 @@ export default function App() {
               {STRATEGIC_REGIONS.map((region) => (
                 <div
                   key={region.state}
-                  className="bg-white border border-[#E2DFD9] p-7 flex flex-col justify-between gap-6"
+                  className="bg-white border border-[#E2DFD9] p-6 sm:p-7 flex flex-col justify-between gap-6"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-3 text-xs text-[#57534E]">
@@ -593,11 +597,11 @@ export default function App() {
         </section>
 
         {/* Section 3: Advisory Model & Mortgage Simulator */}
-        <section className="py-20 lg:py-24 border-t border-[#E2DFD9]">
-          <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-start">
+        <section className="py-14 sm:py-20 lg:py-24 border-t border-[#E2DFD9]">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
               {/* Left: Numbered Advisory Method */}
-              <div className="lg:col-span-5 space-y-8">
+              <div className="lg:col-span-5 space-y-8 min-w-0">
                 <div>
                   <p className="text-xs uppercase tracking-[0.22em] text-[#57534E]">
                     Metodología de Firma
@@ -630,7 +634,7 @@ export default function App() {
               </div>
 
               {/* Right: Live Financial Simulator */}
-              <div className="lg:col-span-7">
+              <div className="lg:col-span-7 min-w-0">
                 <MortgageSimulator
                   propertyPrice={simPrice}
                   onPropertyPriceChange={setSimPrice}
@@ -652,9 +656,9 @@ export default function App() {
         {/* Section 5: Advisory Lead Capture & Headquarters */}
         <section
           id="contacto"
-          className="py-20 lg:py-28 bg-[#161513] text-[#F9F8F6] border-t border-[#292524]"
+          className="py-14 sm:py-20 lg:py-28 bg-[#161513] text-[#F9F8F6] border-t border-[#292524]"
         >
-          <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
               {/* Left: Headquarters & Direct Channels */}
               <div className="lg:col-span-5 space-y-8">
@@ -852,7 +856,7 @@ export default function App() {
 
       {/* Quiet Editorial Footer */}
       <footer className="bg-[#F9F8F6] border-t border-[#E2DFD9] py-10">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center gap-3">
             <BrandMark className="w-6 h-6 shrink-0" strokeColor="#161513" accentColor="#9A7B3E" />
             <div>

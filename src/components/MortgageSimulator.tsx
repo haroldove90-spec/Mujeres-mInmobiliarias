@@ -53,9 +53,9 @@ export const MortgageSimulator: React.FC<MortgageSimulatorProps> = ({
   }, [propertyPrice, downPaymentPct, years, annualRate]);
 
   return (
-    <div id="simulador" className="bg-white border border-[#E2DFD9] p-6 sm:p-8 space-y-6">
+    <div id="simulador" className="bg-white border border-[#E2DFD9] p-5 sm:p-8 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-5 border-b border-[#E2DFD9]">
-        <div>
+        <div className="min-w-0">
           <p className="text-xs uppercase tracking-[0.2em] text-[#57534E]">
             Planeación Patrimonial
           </p>
@@ -75,7 +75,7 @@ export const MortgageSimulator: React.FC<MortgageSimulatorProps> = ({
               onPropertyPriceChange(Number(e.target.value));
             }
           }}
-          className="px-3 py-2 text-xs bg-[#F9F8F6] border border-[#E2DFD9] text-[#161513] focus:outline-none focus:border-[#1B4332]"
+          className="w-full sm:w-auto max-w-full min-w-0 px-3 py-2 text-xs bg-[#F9F8F6] border border-[#E2DFD9] text-[#161513] focus:outline-none focus:border-[#1B4332]"
         >
           <option value="custom">Monto personalizado</option>
           {purchaseProperties.map((prop) => (

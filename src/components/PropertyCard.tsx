@@ -59,8 +59,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
       </div>
 
       {/* Card Body — Zero-pill unboxed metadata */}
-      <div className="p-6 flex flex-col flex-1 justify-between gap-5">
-        <div>
+      <div className="p-5 sm:p-6 flex flex-col flex-1 justify-between gap-5 min-w-0">
+        <div className="min-w-0">
           <div className="flex items-center flex-wrap gap-x-2 gap-y-1 text-xs text-[#57534E]">
             <span className="font-medium text-[#1B4332]">{property.operation}</span>
             <span aria-hidden="true">·</span>
@@ -69,7 +69,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
             <span className="font-mono text-[11px] tabular-nums">{property.folio}</span>
           </div>
 
-          <h3 className="mt-2.5 text-2xl font-medium tracking-tight text-[#161513] leading-snug">
+          <h3 className="mt-2.5 text-xl sm:text-2xl font-medium tracking-tight text-[#161513] leading-snug">
             <button
               type="button"
               onClick={() => onSelect(property)}
@@ -92,13 +92,13 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
                 </span>
               ) : null}
             </p>
-            <span className="text-[11px] text-[#57534E] font-mono tabular-nums whitespace-nowrap">
+            <span className="text-[11px] text-[#57534E] font-mono tabular-nums whitespace-nowrap shrink-0">
               {property.areaLandM2} m² terr.
             </span>
           </div>
 
-          <div className="flex items-center justify-between gap-3 text-xs text-[#57534E]">
-            <span className="tabular-nums truncate">
+          <div className="flex items-center justify-between gap-3 text-xs text-[#57534E] min-w-0">
+            <span className="tabular-nums truncate min-w-0">
               {property.areaConstM2 > 0
                 ? `${property.areaConstM2} m² const. · ${property.bedrooms} Rec. · ${property.bathrooms} Baños`
                 : 'Macrolote urbanizado · Uso H2'}

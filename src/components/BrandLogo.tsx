@@ -145,21 +145,21 @@ export const BrandLockup: React.FC<BrandLockupProps> = ({
   }
 
   return (
-    <div className={`inline-flex items-center gap-4 ${className}`}>
+    <div className={`inline-flex items-center gap-3 sm:gap-4 max-w-full ${className}`}>
       <BrandMark
-        className="w-12 h-12 shrink-0"
+        className="w-9 h-9 sm:w-12 sm:h-12 shrink-0"
         strokeColor={palette.primary}
         accentColor={palette.accent}
       />
-      <div className="flex flex-col text-left">
+      <div className="flex flex-col text-left min-w-0">
         <span
-          className="font-editorial text-2xl sm:text-[26px] font-semibold tracking-tight leading-none"
+          className="font-editorial text-lg sm:text-2xl md:text-[26px] font-semibold tracking-tight leading-tight"
           style={{ color: palette.primary }}
         >
           Mujer Inmobiliaria &amp; Asociadas
         </span>
         <span
-          className="mt-1.5 text-[10px] uppercase tracking-[0.24em] font-medium"
+          className="mt-1 text-[9px] sm:text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.24em] font-medium"
           style={{ color: palette.secondary }}
         >
           Asesoría Patrimonial Inmobiliaria

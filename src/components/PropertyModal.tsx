@@ -54,19 +54,19 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#161513]/70 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-[#161513]/70 backdrop-blur-xs"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-property-title"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-[#F9F8F6] border border-[#E2DFD9] shadow-2xl"
+        className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-[#F9F8F6] border border-[#E2DFD9] shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top bar */}
-        <div className="sticky top-0 z-10 flex items-center justify-between gap-4 px-6 py-4 bg-[#F9F8F6]/95 border-b border-[#E2DFD9]">
-          <div className="flex items-center gap-3 text-xs text-[#57534E] font-mono tabular-nums">
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 px-4 sm:px-6 py-3.5 sm:py-4 bg-[#F9F8F6]/95 border-b border-[#E2DFD9]">
+          <div className="flex items-center flex-wrap gap-x-2 gap-y-1 text-xs text-[#57534E] font-mono tabular-nums min-w-0">
             <span>{property.folio}</span>
             <span aria-hidden="true">·</span>
             <span>{property.operation}</span>
@@ -77,7 +77,7 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
             type="button"
             onClick={onClose}
             aria-label="Cerrar ficha técnica"
-            className="w-9 h-9 inline-flex items-center justify-center border border-[#E2DFD9] bg-white text-[#161513] hover:bg-[#EFECE7] transition-colors cursor-pointer"
+            className="w-9 h-9 shrink-0 inline-flex items-center justify-center border border-[#E2DFD9] bg-white text-[#161513] hover:bg-[#EFECE7] transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
